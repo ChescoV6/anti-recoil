@@ -3,32 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nebula</title>
+    <title>Nebula Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="loader-container" id="loader">
-        <div class="loader">
-            <div></div>
-            <div></div>
-            <div></div>
+    <!-- Loader -->
+    <div class="nebula-loader" id="loader">
+        <canvas id="nebula-canvas"></canvas>
+        <div class="nebula-text">
+            <h1>Nebula</h1>
         </div>
-        <h1>Nebula</h1>
     </div>
 
-    <div class="content" id="content">
-        <h2>Welcome to Nebula Project</h2>
-        <p>Your interface will appear here once loaded.</p>
+    <!-- Main Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <header>
+            <h1>Nebula</h1>
+            <div class="status">
+                <span id="status-indicator" class="off"></span>
+                <span id="status-text">Macro OFF</span>
+            </div>
+        </header>
+
+        <main>
+            <section class="controls">
+                <div class="control">
+                    <label for="mode-select">Mode:</label>
+                    <select id="mode-select">
+                        <option>Hold Left Click</option>
+                        <option>Right + Left</option>
+                    </select>
+                </div>
+
+                <div class="control">
+                    <label>Speed Up:</label>
+                    <input type="range" min="0" max="100.5" step="0.5" value="0" id="speed-up">
+                    <span id="speed-up-val">0</span>
+                </div>
+                <div class="control">
+                    <label>Speed Down:</label>
+                    <input type="range" min="0" max="100.5" step="0.5" value="0" id="speed-down">
+                    <span id="speed-down-val">0</span>
+                </div>
+                <div class="control">
+                    <label>Speed Left:</label>
+                    <input type="range" min="0" max="100.5" step="0.5" value="0" id="speed-left">
+                    <span id="speed-left-val">0</span>
+                </div>
+                <div class="control">
+                    <label>Speed Right:</label>
+                    <input type="range" min="0" max="100.5" step="0.5" value="0" id="speed-right">
+                    <span id="speed-right-val">0</span>
+                </div>
+                <div class="control">
+                    <label>Sensitivity:</label>
+                    <input type="range" min="0" max="2" step="0.1" value="1" id="sensitivity">
+                    <span id="sensitivity-val">1</span>
+                </div>
+
+                <div class="buttons">
+                    <button id="toggle-macro">Enable</button>
+                    <button id="help-btn">Help</button>
+                </div>
+            </section>
+
+            <section class="profiles">
+                <h2>Profiles</h2>
+                <select id="profile-select"></select>
+                <div class="profile-buttons">
+                    <button id="load-profile">Load</button>
+                    <button id="save-profile">Save</button>
+                    <button id="save-as-profile">Save As</button>
+                    <button id="delete-profile">Delete</button>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <script>
-        // Simulate loading
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('content').style.display = 'flex';
-            }, 2500); // 2.5s loader
-        });
-    </script>
+    <!-- Help Modal -->
+    <div class="modal" id="help-modal">
+        <div class="modal-content">
+            <h2>Help - Nebula Macro</h2>
+            <p><b>Keybinds:</b> F1 to enable, F2 to disable macro</p>
+            <p><b>Features:</b> Mode selection, speed adjustment, sensitivity tuning, profiles management</p>
+            <button id="close-help">Close</button>
+        </div>
+    </div>
+
+    <script src="nebula.js"></script>
+    <script src="dashboard.js"></script>
 </body>
 </html>
