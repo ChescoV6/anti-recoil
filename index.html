@@ -3,10 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic HTML Page</title>
+    <title>Nebula</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <p>This is a basic HTML page.</p>
+    <div class="loader-container" id="loader">
+        <div class="loader">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <h1>Nebula</h1>
+    </div>
+
+    <div class="content" id="content">
+        <h2>Welcome to Nebula Project</h2>
+        <p>Your interface will appear here once loaded.</p>
+    </div>
+
+    <script>
+        // Simulate loading
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('content').style.display = 'flex';
+            }, 2500); // 2.5s loader
+        });
+    </script>
 </body>
 </html>
