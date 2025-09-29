@@ -1,0 +1,81 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Body */
+body {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #5c2a72, #8e44ad);
+    color: #fff;
+    overflow: hidden;
+}
+
+/* Loader container */
+.loader-container {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(135deg, #5c2a72, #8e44ad);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Loader animation */
+.loader {
+    display: flex;
+    justify-content: space-between;
+    width: 60px;
+    margin-bottom: 20px;
+}
+
+.loader div {
+    width: 15px;
+    height: 15px;
+    background: #fff;
+    border-radius: 50%;
+    animation: bounce 0.6s infinite alternate;
+}
+
+.loader div:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.loader div:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-20px); }
+}
+
+/* Nebula title */
+.loader-container h1 {
+    font-size: 2.5rem;
+    letter-spacing: 3px;
+}
+
+/* Main content (hidden initially) */
+.content {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.content h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+.content p {
+    font-size: 1rem;
+    opacity: 0.8;
+}
