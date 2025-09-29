@@ -3,94 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nebula Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Recoil Master v5</title>
+    <style>
+        :root {
+            --primary: #6c5ce7; /* Muted purple */
+            --secondary: #a29bfe; /* Lighter purple */
+            --background: #1a0d2e; /* Deep purple-gray bg */
+            --surface: #2d1b69; /* Slightly lighter bg for cards */
+            --text: #e8daef; /* Light lavender text */
+            --text-secondary: #d8bfd8; /* Muted text */
+            --accent: #fd79a8; /* Soft pink-purple accent for highlights */
+            --border: #4834d4; /* Purple border */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Loader Styles */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            border: 4px solid var(--secondary);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Main Dashboard */
+        .dashboard {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dashboard.show {
+            display: block;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--surface);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            color: var(--accent);
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            color: var(--text-secondary);
+        }
+
+        /* Python Window */
+        .python-window {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            max-width: 800px;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.2);
+        }
+
+        .python-header {
+            background-color: var(--primary);
+            padding: 10px 20px;
+            color: var(--text);
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .python-input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            min-height: 100px;
+        }
+
+        .python-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .python-controls {
+            padding: 10px 20px;
+            background-color: var(--secondary);
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background-color: var(--accent);
+            color: var(--text);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #e84393;
+        }
+
+        .python-output {
+            padding: 15px;
+            background-color: #000;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Controls Section */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .control-group {
+            background-color: var(--surface);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .control-group input, .control-group select {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            color: var(--text);
+        }
+
+        .control-group input:focus, .control-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .python-window {
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Loader -->
-    <div class="nebula-loader" id="loader">
-        <canvas id="nebula-canvas"></canvas>
-        <div class="nebula-text">
-            <h1>Nebula</h1>
-        </div>
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
     </div>
 
     <!-- Main Dashboard -->
     <div class="dashboard" id="dashboard">
-        <header>
-            <h1>Nebula</h1>
-            <div class="status">
-                <span id="status-indicator" class="off"></span>
-                <span id="status-text">Macro OFF</span>
+        <div class="header">
+            <h1>Recoil Master v5</h1>
+            <p>Universal Recoil Control Client - Customize Your Experience</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Active Weapons</h3>
+                <p>5</p>
             </div>
-        </header>
+            <div class="stat-card">
+                <h3>Sensitivity</h3>
+                <p>2.5x</p>
+            </div>
+            <div class="stat-card">
+                <h3>Recoil Reduction</h3>
+                <p>92%</p>
+            </div>
+            <div class="stat-card">
+                <h3>Sessions</h3>
+                <p>127</p>
+            </div>
+        </div>
 
-        <main>
-            <section class="controls">
-                <div class="control">
-                    <label for="mode-select">Mode:</label>
-                    <select id="mode-select">
-                        <option>Hold Left Click</option>
-                        <option>Right + Left</option>
-                    </select>
-                </div>
+        <!-- Python Window - Centered -->
+        <div class="python-window">
+            <div class="python-header">
+                <span>Python Console</span>
+                <span>Ready</span>
+            </div>
+            <textarea class="python-input" placeholder="Enter Python code here... e.g., print('Hello, Recoil Master!')&#10;# Customize recoil patterns below&#10;import math&#10;def recoil_pattern(x, y):&#10;    return math.sin(x) * y"></textarea>
+            <div class="python-controls">
+                <button class="btn" onclick="runPython()">Run Code</button>
+                <button class="btn" onclick="clearOutput()">Clear</button>
+            </div>
+            <div class="python-output" id="output">
+                Output will appear here...
+            </div>
+        </div>
 
-                <div class="control">
-                    <label>Speed Up:</label>
-                    <input type="range" min="0" max="100.5" step="0.5" value="0" id="speed-up">
-                    <span id="speed-up-val">0</span>
-                </div>
-                <div class="control">
-                    <label>Speed Down:</label>
-                    <input type="range" min="0" max="100.5" step="0.5" value="0" id="speed-down">
-                    <span id="speed-down-val">0</span>
-                </div>
-                <div class="control">
-                    <label>Speed Left:</label>
-                    <input type="range" min="0" max="100.5" step="0.5" value="0" id="speed-left">
-                    <span id="speed-left-val">0</span>
-                </div>
-                <div class="control">
-                    <label>Speed Right:</label>
-                    <input type="range" min="0" max="100.5" step="0.5" value="0" id="speed-right">
-                    <span id="speed-right-val">0</span>
-                </div>
-                <div class="control">
-                    <label>Sensitivity:</label>
-                    <input type="range" min="0" max="2" step="0.1" value="1" id="sensitivity">
-                    <span id="sensitivity-val">1</span>
-                </div>
-
-                <div class="buttons">
-                    <button id="toggle-macro">Enable</button>
-                    <button id="help-btn">Help</button>
-                </div>
-            </section>
-
-            <section class="profiles">
-                <h2>Profiles</h2>
-                <select id="profile-select"></select>
-                <div class="profile-buttons">
-                    <button id="load-profile">Load</button>
-                    <button id="save-profile">Save</button>
-                    <button id="save-as-profile">Save As</button>
-                    <button id="delete-profile">Delete</button>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Help Modal -->
-    <div class="modal" id="help-modal">
-        <div class="modal-content">
-            <h2>Help - Nebula Macro</h2>
-            <p><b>Keybinds:</b> F1 to enable, F2 to disable macro</p>
-            <p><b>Features:</b> Mode selection, speed adjustment, sensitivity tuning, profiles management</p>
-            <button id="close-help">Close</button>
+        <!-- Controls Section -->
+        <div class="controls">
+            <div class="control-group">
+                <label for="weapon">Select Weapon</label>
+                <select id="weapon">
+                    <option value="ak47">AK-47</option>
+                    <option value="m4a1">M4A1</option>
+                    <option value="mp5">MP5</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="sensitivity">Sensitivity</label>
+                <input type="range" id="sensitivity" min="0.1" max="5" step="0.1" value="2.5">
+                <span id="sensValue">2.5</span>
+            </div>
+            <div class="control-group">
+                <label for="toggle">Enable Recoil Control</label>
+                <input type="checkbox" id="toggle" checked>
+            </div>
+            <div class="control-group">
+                <button class="btn" style="width: 100%;">Save Settings</button>
+            </div>
         </div>
     </div>
 
-    <script src="nebula.js"></script>
-    <script src="dashboard.js"></script>
+    <script>
+        // Hide loader after 2 seconds (simulate load)
+        setTimeout(() => {
+            document.getElementById('loader').classList.add('hidden');
+            document.getElementById('dashboard').classList.add('show');
+        }, 2000);
+
+        // Python run simulation (since no real Python here, just echo)
+        function runPython() {
+            const input = document.querySelector('.python-input').value;
+            const output = document.getElementById('output');
+            output.innerHTML = `>>> ${input.replace(/\n/g, '\n>>> ')}\nRunning...\nOutput: Simulated Python execution - Hello from Recoil Master!\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function clearOutput() {
+            document.getElementById('output').innerHTML = '';
+        }
+
+        // Sensitivity slider
+        document.getElementById('sensitivity').addEventListener('input', (e) => {
+            document.getElementById('sensValue').textContent = e.target.value;
+        });
+    </script>
 </body>
 </html>
